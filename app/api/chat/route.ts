@@ -6,6 +6,23 @@ const DIFY_API_URL = process.env.DIFY_API_URL || 'http://115.190.43.2/v1/chat-me
 // 从环境变量获取API密钥
 const DIFY_API_KEY = process.env.DIFY_API_KEY;
 
+// 定义类型以代替 any
+interface FileInput {
+    type: string;
+    transfer_method: string;
+    url: string;
+    upload_file_id: string;
+}
+
+interface RequestBody {
+    query: string;
+    inputs: Record<string, string>;
+    response_mode: string;
+    user: string;
+    files: FileInput[];
+    conversation_id?: string;
+}
+
 export async function POST(req: NextRequest) {
     try {
         const { messages, conversationId, userId = 'default-user', files = [] } = await req.json();
@@ -14,25 +31,25 @@ export async function POST(req: NextRequest) {
         const latestMessage = messages[messages.length - 1];
 
         // 构建请求体
-        let requestBody: any = {
+        const requestBody: RequestBody = {
             query: latestMessage.content,
             inputs: {},
             response_mode: 'streaming',
             user: userId,
-            files: files.map((file: any) => ({
+            files: files.map((file: FileInput) => ({
                 type: file.type,
                 transfer_method: file.transfer_method,
                 url: file.url,
                 upload_file_id: file.upload_file_id
             }))
         };
-        
+
         // 检查conversation_id是否为有效的UUID格式
         try {
             if (conversationId && typeof conversationId === 'string' && uuidValidate(conversationId)) {
                 requestBody.conversation_id = conversationId;
             }
-        } catch (error) {
+        } catch {
             console.warn('Invalid conversation_id format, ignoring:', conversationId);
             // 无效的conversation_id将被忽略，不添加到请求中
         }

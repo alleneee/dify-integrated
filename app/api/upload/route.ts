@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
             try {
                 const errorData = JSON.parse(errorText);
                 throw new Error(`文件上传失败: ${JSON.stringify(errorData)}`);
-            } catch (e) {
+            } catch {
                 throw new Error(`文件上传失败: ${response.status} ${response.statusText}`);
             }
         }
