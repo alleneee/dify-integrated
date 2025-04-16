@@ -6,7 +6,6 @@ import { generateConversationId, generateUserId } from '@/lib/utils';
 
 // 导入React Chat Elements组件
 import {
-  MessageBox,
   Input,
   Button,
   MessageList,
@@ -15,6 +14,16 @@ import {
 
 // 导入样式
 import 'react-chat-elements/dist/main.css';
+
+// 定义消息类型
+interface Message {
+  position: 'left' | 'right';
+  type: string;
+  title: string;
+  text: string;
+  date: Date;
+  id: string;
+}
 
 // 定义上传文件类型
 interface UploadedFile {
@@ -26,11 +35,17 @@ interface UploadedFile {
   transfer_method: string;
 }
 
+// 输入框引用类型
+interface InputRef {
+  clear: () => void;
+  focus: () => void;
+}
+
 export default function ChatInterface() {
   // 状态管理
   const [userId] = useState<string>(generateUserId());
   const [conversationId, setConversationId] = useState<string>(generateConversationId());
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -39,7 +54,7 @@ export default function ChatInterface() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<any>(null);
+  const inputRef = useRef<InputRef>(null);
 
   // 自动滚动到底部
   const scrollToBottom = () => {
@@ -57,7 +72,7 @@ export default function ChatInterface() {
 
   // 添加用户消息
   const addUserMessage = (text: string) => {
-    const newMessage = {
+    const newMessage: Message = {
       position: 'right',
       type: 'text',
       title: '我',
@@ -71,7 +86,7 @@ export default function ChatInterface() {
 
   // 添加系统消息
   const addSystemMessage = (text: string) => {
-    const newMessage = {
+    const newMessage: Message = {
       position: 'left',
       type: 'text',
       title: '系统',
@@ -85,7 +100,7 @@ export default function ChatInterface() {
 
   // 添加AI消息
   const addAIMessage = (text: string) => {
-    const newMessage = {
+    const newMessage: Message = {
       position: 'left',
       type: 'text',
       title: 'AI助手',
