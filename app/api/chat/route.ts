@@ -4,7 +4,8 @@ import { validate as uuidValidate } from 'uuid';
 
 export const runtime = 'edge';
 
-const DIFY_API_URL = process.env.DIFY_API_URL || 'http://115.190.43.2/v1/chat-messages';
+// 修复：使用完整的URL格式并改为使用环境变量配置
+const DIFY_API_URL = process.env.DIFY_API_URL || 'https://api.dify.ai/v1/chat-messages';
 // 从环境变量获取API密钥
 const DIFY_API_KEY = process.env.DIFY_API_KEY;
 
@@ -57,19 +58,37 @@ export async function POST(req: NextRequest) {
 
         console.log('发送到Dify的请求:', JSON.stringify(requestBody, null, 2));
 
+        // 检查API URL和Key是否配置正确
+        if (!DIFY_API_KEY) {
+            throw new Error('缺少DIFY_API_KEY环境变量配置');
+        }
+
         // 调用Dify API
         const response = await fetch(DIFY_API_URL, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${DIFY_API_KEY}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
             body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Dify API错误: ${JSON.stringify(errorData)}`);
+            // 改进错误处理，避免JSON解析错误
+            const errorText = await response.text();
+            let errorMessage = `Dify API错误 (${response.status}): `;
+
+            try {
+                // 尝试解析为JSON，但不强制要求
+                const errorData = JSON.parse(errorText);
+                errorMessage += JSON.stringify(errorData);
+            } catch (e) {
+                // 如果不是JSON，直接使用文本内容
+                errorMessage += errorText.substring(0, 200); // 限制错误长度
+            }
+
+            throw new Error(errorMessage);
         }
 
         // 转换Dify的流式响应为标准格式
