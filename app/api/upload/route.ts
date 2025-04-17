@@ -52,22 +52,21 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        const data = await response.json();
-        console.log("上传成功:", data);
+        // 获取上传接口响应的数据
+        const responseData = await response.json();
+        console.log("上传成功:", responseData);
 
-        // 返回上传ID和其他必要信息
+        // 根据Dify API响应格式，返回数据
         return new Response(JSON.stringify({
-            success: true,
-            file: {
-                id: data.id || uuidv4(),
-                name: file.name,
-                type: file.type,
-                size: file.size,
-                upload_file_id: data.id,
-                user: user,
-                // 在这里我们使用local_file作为传输方法，因为我们先上传文件到Dify
-                transfer_method: 'local_file'
-            }
+            id: responseData.id,
+            name: responseData.name,
+            size: responseData.size,
+            extension: responseData.extension,
+            mime_type: responseData.mime_type,
+            created_by: responseData.created_by,
+            created_at: responseData.created_at,
+            upload_file_id: responseData.id,
+            transfer_method: 'local_file'
         }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }

@@ -1,0 +1,611 @@
+/* Open Web UI风格聊天界面样式 */
+
+:root {
+  --primary-color: #2D7BEE;
+  --sidebar-bg: #2D7BEE;
+  --sidebar-text: #ffffff;
+  --main-bg: #ffffff;
+  --user-msg-bg: rgba(0, 122, 255, 0.1);
+  --user-msg-border: rgba(0, 122, 255, 0.2);
+  --assistant-msg-bg: rgba(240, 240, 247, 0.7);
+  --assistant-msg-border: rgba(0, 0, 0, 0.05);
+  --system-msg-bg: rgba(242, 242, 247, 0.6);
+  --system-msg-border: rgba(0, 0, 0, 0.1);
+  --text-primary: #000000;
+  --text-secondary: #3c3c43b3;
+  --border-radius: 1.25rem;
+}
+
+.dark {
+  --primary-color: #0A84FF;
+  --sidebar-bg: #2160c4;
+  --sidebar-text: #ffffff;
+  --main-bg: #1c1c1e;
+  --user-msg-bg: rgba(10, 132, 255, 0.2);
+  --user-msg-border: rgba(10, 132, 255, 0.3);
+  --assistant-msg-bg: rgba(44, 44, 46, 0.6);
+  --assistant-msg-border: rgba(255, 255, 255, 0.1);
+  --system-msg-bg: rgba(58, 58, 60, 0.6);
+  --system-msg-border: rgba(255, 255, 255, 0.15);
+  --text-primary: #ffffff;
+  --text-secondary: #ebebf599;
+}
+
+/* 整体布局 */
+.dify-layout {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 侧边栏 */
+.dify-sidebar {
+  background-color: #2D7BEE;
+  color: #ffffff;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dify-sidebar-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  gap: 0.5rem;
+}
+
+.dify-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.dify-sidebar-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--sidebar-text);
+  text-align: center;
+}
+
+.dify-new-chat-button {
+  margin: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: calc(100% - 2rem);
+  text-align: center;
+}
+
+.dify-new-chat-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 主内容区域 */
+.dify-main {
+  background-color: var(--main-bg);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* 聊天界面容器 */
+.dify-chat-interface {
+  max-width: none;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+/* 消息容器 */
+.dify-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* 文件上传提示 */
+.dify-file-upload-info {
+  padding: 1rem;
+  text-align: center;
+  color: #666;
+  border-bottom: 1px solid #eee;
+  font-size: 0.9rem;
+}
+
+.dify-file-name {
+  font-weight: 500;
+  margin-left: 0.5rem;
+  color: #333;
+}
+
+/* 聊天标题 */
+.dify-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.dark .dify-header {
+  background-color: #2c2c2e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dify-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 消息样式 */
+.dify-message {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dify-message-container {
+  display: flex;
+  max-width: 85%;
+  gap: 0.75rem;
+}
+
+/* 用户消息样式 */
+.message-user .dify-message-container {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message-user .dify-message-content {
+  background-color: var(--user-msg-bg);
+  border: 1px solid var(--user-msg-border);
+  border-radius: var(--border-radius) 0 var(--border-radius) var(--border-radius);
+  color: var(--text-primary);
+}
+
+/* 助手消息样式 */
+.message-assistant .dify-message-container {
+  align-self: flex-start;
+}
+
+.message-assistant .dify-message-content {
+  background-color: var(--assistant-msg-bg);
+  border: 1px solid var(--assistant-msg-border);
+  border-radius: 0 var(--border-radius) var(--border-radius) var(--border-radius);
+  color: var(--text-primary);
+}
+
+/* 系统消息样式 */
+.message-system .dify-message-container {
+  align-self: center;
+  max-width: 80%;
+}
+
+.message-system .dify-message-content {
+  background-color: var(--system-msg-bg);
+  border: 1px dashed var(--system-msg-border);
+  border-radius: var(--border-radius);
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+/* 头像样式 */
+.dify-message-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: white;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.avatar.user {
+  background-color: var(--primary-color);
+}
+
+.avatar.assistant {
+  background-color: #5856D6;  /* 紫色，Open Web UI常用AI颜色 */
+}
+
+.avatar.system {
+  background-color: #8E8E93;  /* 灰色 */
+}
+
+.avatar-name {
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+  color: var(--text-secondary);
+  display: none;  /* Open Web UI不显示名称 */
+}
+
+/* 消息内容 */
+.dify-message-content {
+  padding: 0.75rem 1rem;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.plain-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.95rem;
+}
+
+.dify-message-meta {
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  padding: 0 0.5rem;
+}
+
+/* 输入区域 */
+.dify-input-area {
+  padding: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+}
+
+.dark .dify-input-area {
+  background-color: #2c2c2e;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dify-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: #f2f2f7;
+  border-radius: 1.5rem;
+  padding: 0.5rem;
+  transition: all 0.2s;
+}
+
+.dark .dify-input-wrapper {
+  background-color: #3a3a3c;
+}
+
+.dify-input-wrapper:focus-within {
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.dify-chat-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.dify-chat-input:focus {
+  outline: none;
+}
+
+.dify-attach-button,
+.dify-send-button {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.dify-send-button {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.dify-send-button:hover {
+  opacity: 0.9;
+}
+
+.dify-send-button.disabled {
+  background-color: #d1d1d6;
+  cursor: not-allowed;
+}
+
+/* 文件预览 */
+.dify-files-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.dify-file-item {
+  display: flex;
+  align-items: center;
+  background-color: #e9e9eb;
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+}
+
+.dark .dify-file-item {
+  background-color: #3a3a3c;
+}
+
+.dify-file-item button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  margin-left: 0.5rem;
+}
+
+/* 加载指示器 */
+.dify-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem 0;
+  color: var(--text-secondary);
+}
+
+.dify-loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 错误消息 */
+.dify-error-message {
+  color: #ff3b30;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* 加载动画 */
+.loading-message {
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  min-height: 40px;
+  width: 100%;
+  background: transparent;
+}
+
+.loading-dot-container {
+  display: flex;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.loading-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  display: inline-block;
+  animation: loadingBounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loadingBounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+/* 错误消息样式 */
+.error-message {
+  color: #e53e3e;
+  background-color: rgba(229, 62, 62, 0.1);
+  border-left: 4px solid #e53e3e;
+}
+
+/* 代码块样式 */
+.code-block {
+  background-color: #282c34;
+  color: #abb2bf;
+  border-radius: 4px;
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* Markdown样式 */
+.markdown-content {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.markdown-content p {
+  margin-bottom: 1rem;
+}
+
+.markdown-content h1, 
+.markdown-content h2, 
+.markdown-content h3,
+.markdown-content h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.markdown-content h1 {
+  font-size: 1.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.3rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.15rem;
+}
+
+.markdown-content h4 {
+  font-size: 1rem;
+}
+
+.markdown-content ul, 
+.markdown-content ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.markdown-content ul li,
+.markdown-content ol li {
+  margin-bottom: 0.25rem;
+}
+
+.markdown-content a {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+.markdown-content a:hover {
+  opacity: 0.8;
+}
+
+.markdown-content pre {
+  margin: 0.75rem 0 1rem 0;
+  border-radius: 0.5rem;
+  background-color: #2d2d2d;
+  color: #f8f8f2;
+  overflow-x: auto;
+}
+
+.dark .markdown-content pre {
+  background-color: #1a1a1a;
+}
+
+.markdown-content code:not(pre code) {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.25rem;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.dark .markdown-content code:not(pre code) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.markdown-content blockquote {
+  border-left: 3px solid var(--primary-color);
+  padding-left: 1rem;
+  margin-left: 0;
+  margin-right: 0;
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0 1rem 0;
+  font-size: 0.9rem;
+}
+
+.markdown-content table th {
+  background-color: rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+
+.dark .markdown-content table th {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.markdown-content table th,
+.markdown-content table td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .markdown-content table th,
+.dark .markdown-content table td {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 查看详情按钮样式 */
+.dify-details-button {
+  background-color: #2D7BEE;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  margin-left: auto;
+  transition: background-color 0.2s;
+}
+
+.dify-details-button:hover {
+  background-color: #1c60c4;
+}

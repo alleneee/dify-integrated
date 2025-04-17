@@ -2,25 +2,27 @@ import { NextRequest } from 'next/server';
 import { transformDifyStream } from '../../../lib/utils';
 import { validate as uuidValidate } from 'uuid';
 
+export const runtime = 'edge';
+
 const DIFY_API_URL = process.env.DIFY_API_URL || 'http://115.190.43.2/v1/chat-messages';
 // 从环境变量获取API密钥
 const DIFY_API_KEY = process.env.DIFY_API_KEY;
 
-// 定义类型以代替 any
+// 文件输入接口定义
 interface FileInput {
-    type: string;
-    transfer_method: string;
-    url: string;
-    upload_file_id: string;
+    type: string;           // 文件类型：document, image, audio, video
+    transfer_method: string; // 传输方法，固定为 local_file
+    upload_file_id: string;  // 文件上传后的ID
 }
 
+// 请求体接口定义
 interface RequestBody {
-    query: string;
-    inputs: Record<string, string>;
-    response_mode: string;
-    user: string;
-    files: FileInput[];
-    conversation_id?: string;
+    query: string;                  // 用户查询内容
+    inputs: Record<string, string>; // 可选的输入参数
+    response_mode: string;          // 响应模式，streaming 或 blocking
+    user: string;                   // 用户ID
+    files: FileInput[];             // 文件列表
+    conversation_id?: string;       // 可选的会话ID
 }
 
 export async function POST(req: NextRequest) {
@@ -30,29 +32,30 @@ export async function POST(req: NextRequest) {
         // 获取最后一条消息作为查询
         const latestMessage = messages[messages.length - 1];
 
+        // 处理文件列表，确保符合Dify API格式要求
+        const validFiles = files
+            .filter((file: any) => file && file.upload_file_id)
+            .map((file: any) => ({
+                type: file.type || 'document', // 确保文件类型有效
+                transfer_method: 'local_file',  // 固定使用local_file
+                upload_file_id: file.upload_file_id
+            }));
+
         // 构建请求体
         const requestBody: RequestBody = {
             query: latestMessage.content,
             inputs: {},
             response_mode: 'streaming',
             user: userId,
-            files: files.map((file: FileInput) => ({
-                type: file.type,
-                transfer_method: file.transfer_method,
-                url: file.url,
-                upload_file_id: file.upload_file_id
-            }))
+            files: validFiles
         };
 
         // 检查conversation_id是否为有效的UUID格式
-        try {
-            if (conversationId && typeof conversationId === 'string' && uuidValidate(conversationId)) {
-                requestBody.conversation_id = conversationId;
-            }
-        } catch {
-            console.warn('Invalid conversation_id format, ignoring:', conversationId);
-            // 无效的conversation_id将被忽略，不添加到请求中
+        if (conversationId && typeof conversationId === 'string' && uuidValidate(conversationId)) {
+            requestBody.conversation_id = conversationId;
         }
+
+        console.log('发送到Dify的请求:', JSON.stringify(requestBody, null, 2));
 
         // 调用Dify API
         const response = await fetch(DIFY_API_URL, {
