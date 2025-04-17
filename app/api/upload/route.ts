@@ -1,9 +1,12 @@
 import { NextRequest } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
+// 设置为Node.js运行时
+export const runtime = 'nodejs';
+
 // 从环境变量获取API密钥和上传URL
 const DIFY_API_KEY = process.env.DIFY_API_KEY;
-const DIFY_UPLOAD_URL = process.env.DIFY_UPLOAD_URL || 'http://115.190.43.2/v1/files/upload';
+const DIFY_UPLOAD_URL = process.env.DIFY_UPLOAD_URL || 'https://api.dify.ai/v1/files/upload';
 
 export async function POST(req: NextRequest) {
     try {

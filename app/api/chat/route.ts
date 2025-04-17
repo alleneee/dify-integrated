@@ -2,7 +2,8 @@ import { NextRequest } from 'next/server';
 import { transformDifyStream } from '../../../lib/utils';
 import { validate as uuidValidate } from 'uuid';
 
-export const runtime = 'edge';
+// 将Edge运行时改为Node.js运行时
+export const runtime = 'nodejs';
 
 // 修复：使用完整的URL格式并改为使用环境变量配置
 const DIFY_API_URL = process.env.DIFY_API_URL || 'https://api.dify.ai/v1/chat-messages';
